@@ -13,6 +13,7 @@
 //region prototypes
 //void drawMap(char *filename);
 void startPlayerColor();
+void startPlayerStarColor();
 void displayCharacter();
 void resetCharacterDisplay();
 int checkPossibleMove(int y, int x);

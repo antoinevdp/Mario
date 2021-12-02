@@ -19,9 +19,13 @@
 char CHAR_PLAYER = 'o';
 int player_x = SPAWN_POINT_X;
 int player_y = SPAWN_POINT_Y;
+int player_life = 1;
 int next_pos_x = 0;
 int next_pos_y = 0;
 int animationFPS = 50;
+
+int power_y = 0;
+int power_x = 0;
 
 int nextTypeBlockUp;
 int nextTypeBlockDown;
@@ -187,7 +191,12 @@ void displayCharacter(){
     mvaddch(player_y+Y_OFFSET_ARM_L,player_x+X_OFFSET_ARM_L,CHAR_ARM_L);
     mvaddch(player_y+Y_OFFSET_ARM_R,player_x+X_OFFSET_ARM_R,CHAR_ARM_R);
     mvaddch(player_y+Y_OFFSET_FOOT_L,player_x+X_OFFSET_FOOT_L,CHAR_FOOT_L);
+    mvaddch(player_y+Y_OFFSET_FOOT_L,player_x+X_OFFSET_FOOT_L+1, ' ');
     mvaddch(player_y+Y_OFFSET_FOOT_R,player_x+X_OFFSET_FOOT_R,CHAR_FOOT_R);
+    if(((player_x == power_x) && (player_y == power_y)) || ((player_x-1 == power_x) && (player_y == power_y)) || ((player_x-2 == power_x) && (player_y == power_y))){
+        startPlayerStarColor();
+        player_life++;
+    }
 }
 
 void startPlayerColor(){
@@ -256,19 +265,12 @@ int checkPossibleMove(int y, int x){
 //endregion CALCULATE MOVEMENTS
 
 //region DIVERS
-void spawnPower(){
-    int power_y = player_y+Y_OFFSET_HEAD-3;
-    int power_x = player_x+X_OFFSET_HEAD;
-    mvprintw(power_y, power_x, "o");
-    int currentBlock = 0;
-    /*while ((currentBlock = checkPossibleMove(power_y, power_x+1)) == AIR_BLOCK_VALUE){
-        if(currentBlock == AIR_BLOCK_VALUE){
-            mvprintw(power_y, power_x++, "o");
-        } else{
-            break;
-        }
 
-    }*/
+void spawnPower(){
+    power_y = player_y+Y_OFFSET_HEAD-3;
+    power_x = player_x+X_OFFSET_HEAD;
+    mvprintw(power_y, power_x, "o");
+    startPlayerColor();
 }
 
 // Fonction pour changer la couleur du bloc mystere
@@ -290,7 +292,6 @@ void blockMystereDisplay(){
     attroff(COLOR_PAIR(10));
     init_pair(20, COLOR_CYAN, COLOR_BLUE);
     attron(COLOR_PAIR(20));
-    startPlayerStarColor();
     spawnPower();
 }
 //endregion DIVERS
