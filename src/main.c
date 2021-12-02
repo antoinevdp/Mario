@@ -15,23 +15,6 @@
 
 //endregion INCLUDE
 
-//region prototypes
-//void drawMap(char *filename);
-void startPlayerColor();
-void displayCharacter();
-void resetCharacterDisplay();
-int checkPossibleMove(int y, int x);
-void getNextTypeBlockUpAndDown();
-int canGoRight();
-int canGoLeft();
-int canJump();
-int canDrop();
-void movePlayer(int m_direction);
-void jump();
-void blockMystereDisplay();
-void gravity();
-//endregion prototypes
-
 //region VARIABLES
 char CHAR_PLAYER = 'o';
 int player_x = SPAWN_POINT_X;
@@ -44,11 +27,6 @@ int nextTypeBlockUp;
 int nextTypeBlockDown;
 int nextTypeBlockForward;
 int nextTypeBlockBackward;
-
-int nextTypeBlockUpHead;
-int nextTypeBlockDownHead;
-int nextTypeBlockForwardHead;
-int nextTypeBlockBackwardHead;
 
 int previousInputList[1];
 
@@ -278,17 +256,42 @@ int checkPossibleMove(int y, int x){
 //endregion CALCULATE MOVEMENTS
 
 //region DIVERS
+void spawnPower(){
+    int power_y = player_y+Y_OFFSET_HEAD-3;
+    int power_x = player_x+X_OFFSET_HEAD;
+    mvprintw(power_y, power_x, "o");
+    int currentBlock = 0;
+    /*while ((currentBlock = checkPossibleMove(power_y, power_x+1)) == AIR_BLOCK_VALUE){
+        if(currentBlock == AIR_BLOCK_VALUE){
+            mvprintw(power_y, power_x++, "o");
+        } else{
+            break;
+        }
+
+    }*/
+}
+
 // Fonction pour changer la couleur du bloc mystere
 void blockMystereDisplay(){
     char *ch_t = "!";
     //initialisation des couleurs
     init_pair(10, COLOR_YELLOW, COLOR_BLACK);
     attron(COLOR_PAIR(10));
+    if(checkPossibleMove(player_y+Y_OFFSET_HEAD-1, player_x+X_OFFSET_HEAD-1) == POWER_BOX_VALUE) mvprintw(player_y+Y_OFFSET_HEAD-1, player_x+X_OFFSET_HEAD-1, ch_t);
+    if(checkPossibleMove(player_y+Y_OFFSET_HEAD-1, player_x+X_OFFSET_HEAD-2) == POWER_BOX_VALUE) mvprintw(player_y+Y_OFFSET_HEAD-1, player_x+X_OFFSET_HEAD-2, ch_t);
+    if(checkPossibleMove(player_y+Y_OFFSET_HEAD-1, player_x+X_OFFSET_HEAD+1) == POWER_BOX_VALUE) mvprintw(player_y+Y_OFFSET_HEAD-1, player_x+X_OFFSET_HEAD+1, ch_t);
+    if(checkPossibleMove(player_y+Y_OFFSET_HEAD-1, player_x+X_OFFSET_HEAD+2) == POWER_BOX_VALUE) mvprintw(player_y+Y_OFFSET_HEAD-1, player_x+X_OFFSET_HEAD+2, ch_t);
+    if(checkPossibleMove(player_y+Y_OFFSET_HEAD-2, player_x+X_OFFSET_HEAD-1) == POWER_BOX_VALUE) mvprintw(player_y+Y_OFFSET_HEAD-2, player_x+X_OFFSET_HEAD-1, ch_t);
+    if(checkPossibleMove(player_y+Y_OFFSET_HEAD-2, player_x+X_OFFSET_HEAD-2) == POWER_BOX_VALUE) mvprintw(player_y+Y_OFFSET_HEAD-2, player_x+X_OFFSET_HEAD-2, ch_t);
+    if(checkPossibleMove(player_y+Y_OFFSET_HEAD-2, player_x+X_OFFSET_HEAD+1) == POWER_BOX_VALUE) mvprintw(player_y+Y_OFFSET_HEAD-2, player_x+X_OFFSET_HEAD+1, ch_t);
+    if(checkPossibleMove(player_y+Y_OFFSET_HEAD-2, player_x+X_OFFSET_HEAD+2) == POWER_BOX_VALUE) mvprintw(player_y+Y_OFFSET_HEAD-2, player_x+X_OFFSET_HEAD+2, ch_t);
     mvprintw(player_y+Y_OFFSET_HEAD-1, player_x+X_OFFSET_HEAD, ch_t);
+    mvprintw(player_y+Y_OFFSET_HEAD-2, player_x+X_OFFSET_HEAD, ch_t);
     attroff(COLOR_PAIR(10));
     init_pair(20, COLOR_CYAN, COLOR_BLUE);
     attron(COLOR_PAIR(20));
     startPlayerStarColor();
+    spawnPower();
 }
 //endregion DIVERS
 //endregion Functions

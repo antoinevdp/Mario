@@ -10,6 +10,25 @@
 #ifndef INNOVATION_MAIN_H
 #define INNOVATION_MAIN_H
 
+//region prototypes
+//void drawMap(char *filename);
+void startPlayerColor();
+void displayCharacter();
+void resetCharacterDisplay();
+int checkPossibleMove(int y, int x);
+void getNextTypeBlockUpAndDown();
+int canGoRight();
+int canGoLeft();
+int canJump();
+int canDrop();
+void movePlayer(int m_direction);
+void jump();
+void blockMystereDisplay();
+void gravity();
+void spawnPower();
+//endregion prototypes
+
+
 void Setup(){
     initscr(); //initialisation de la fenetre ncurses
     raw();
