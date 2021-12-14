@@ -149,11 +149,11 @@ void jump(int previousInput){
     //Tant que le bloc en dessous est un bloc vide
     int hasTouched = 0;
     int counter = 0;
-    if (canDrop(player_y, player_x, CHAR_DIMENSION) == 1){
+    while (canDrop(player_y, player_x, CHAR_DIMENSION) == 1){
         counter += 1;
         resetCharacterDisplay();
         player_y++;
-        if (counter >= 5) hasTouched == 1;
+        if (counter >= 5) hasTouched = 1;
 
         if (canGoRight(player_y, player_x, CHAR_DIMENSION) != 1 || canGoLeft(player_y, player_x, CHAR_DIMENSION) != 1) hasTouched = 1;
         if (previousInput == 'd' && canDrop(player_y, player_x, CHAR_DIMENSION) == canGoRight(player_y, player_x, CHAR_DIMENSION) == 1 && hasTouched == 0)  player_x++;
