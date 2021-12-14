@@ -12,6 +12,8 @@
 #define SCREEN_WIDTH 209
 #define SCREEN_HEIGHT 49
 
+#define new_max(x,y) (((x) >= (y)) ? (x) : (y))
+
 //region prototypes
 //void drawMap(char *filename);
 void startPlayerColor();
@@ -19,7 +21,7 @@ void startPlayerStarColor();
 void displayCharacter();
 void resetCharacterDisplay();
 int checkPossibleMove(int y, int x);
-void getNextTypeBlockUpAndDown();
+void getNextTypeBlocks();
 int canGoRight(int y, int x, int dimension);
 int canGoLeft(int y, int x, int dimension);
 int canJump(int y, int x, int dimension);

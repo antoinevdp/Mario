@@ -66,6 +66,7 @@ void drawMap(char *filename){
     init_pair(BLOCKS_PAIR, COLOR_BLACK, COLOR_RED);
     init_pair(POWER_BOX_PAIR, COLOR_BLACK, COLOR_YELLOW);
     init_pair(BORDER_PAIR, COLOR_BLACK, COLOR_BLACK);
+    init_pair(MOB_PAIR, COLOR_WHITE, COLOR_BLACK);
 
     char ch; //caractere actuel de la map en ascii
     // caractere par caractere
@@ -103,6 +104,10 @@ void drawMap(char *filename){
             case BORDER:
                 asciiToIntAction(listIndex, BORDER_PAIR);
                 drawAction(BORDER_PAIR, ch);
+                break;
+            case MOB:
+                asciiToIntAction(listIndex, MOB_PAIR);
+                drawAction(MOB_PAIR, ch);
                 break;
             default:
                 printw("%c", ch); // Si l'element n'est pas reconnu, on l'affiche tel quel

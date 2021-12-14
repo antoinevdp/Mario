@@ -17,9 +17,11 @@
 #define POWER_BOX  '?'
 #define BLOCKS    '|'
 #define BORDER    '$'
+#define MOB    '/'
 
 #define POWER_BOX_VALUE 2
 #define AIR_BLOCK_VALUE 0
+#define MOB_VALUE 3
 
 #define GRASS_PAIR     1
 #define DIRT_PAIR     2
@@ -28,6 +30,7 @@
 #define POWER_BOX_PAIR  5
 #define BLOCKS_PAIR    6
 #define BORDER_PAIR    7
+#define MOB_PAIR    8
 
 #define MAPLISTSIZE 10659
 

@@ -37,8 +37,8 @@ int leftWall = 0;
 
 int nextTypeBlockUp;
 int nextTypeBlockDown;
-int nextTypeBlockForward;
-int nextTypeBlockBackward;
+int nextTypeBlockRight;
+int nextTypeBlockLeft;
 
 char previousInputList[1];
 
@@ -68,9 +68,17 @@ int main ( int argc, char **argv) {
 
         while ((input = getch()) != 'x'){
             if(player_y >= SCREEN_HEIGHT) { Shutdown(); exit(1); }
+            if(player_life <= 0) { Shutdown(); exit(1); }
             resetCharacterDisplay();
             //play
-            getNextTypeBlockUpAndDown();
+            getNextTypeBlocks();
+
+            if(nextTypeBlockUp == 3 || nextTypeBlockDown == 3 || nextTypeBlockRight == 3 || nextTypeBlockLeft == 3){
+                player_life--;
+                if(previousInputList[0] == 'q') player_x+=4;
+                if(previousInputList[0] == 'd') player_x-=4;
+                startPlayerColor();
+            }
 
             if(input == 'd'){
                 previousInputList[0] = input;
@@ -125,7 +133,7 @@ void movePlayer(int m_direction){
 void jump(int previousInput){
     // BAS vers HAUT -> Pour i de 1 jusqu'a la hauteur de saut du personnage
     for (int i = 1; i <= JUMP_STRENGHT; ++i) {
-        getNextTypeBlockUpAndDown();
+        getNextTypeBlocks();
         resetCharacterDisplay();
         if (canJump(player_y, player_x, CHAR_DIMENSION) == 1){// Si le bloc est un bloc vide, on monte
             player_y-=0.01*i;
@@ -163,7 +171,7 @@ void jump(int previousInput){
         napms(animationFPS);
         UpdateScreen();
     }
-    getNextTypeBlockUpAndDown();
+    getNextTypeBlocks();
     flushinp();
 }
 
@@ -269,15 +277,18 @@ int canDrop(int y, int x, int dimension){
 //endregion CAN
 
 //region CALCULATE MOVEMENTS
-void getNextTypeBlockUpAndDown(){
+void getNextTypeBlocks(){
     nextTypeBlockUp = checkPossibleMove(player_y+Y_OFFSET_HEAD-1, player_x+X_OFFSET_HEAD);
-    nextTypeBlockDown = checkPossibleMove(player_y+Y_OFFSET_HEAD+1, player_x+X_OFFSET_HEAD);
+    nextTypeBlockDown = new_max(checkPossibleMove(player_y+1, player_x+X_OFFSET_FOOT_L), checkPossibleMove(player_y+1, player_x+X_OFFSET_FOOT_R));
+    nextTypeBlockRight = checkPossibleMove(player_y, player_x+X_OFFSET_FOOT_R+1);
+    nextTypeBlockLeft = checkPossibleMove(player_y, player_x+X_OFFSET_FOOT_L-1);
 }
 // Fonction pour connaitre savoir si un bloc est un bloc mystère, vide ou plein
 int checkPossibleMove(int y, int x){
     int blockType = fromCoordToElementInMapList(y,x); // on recupere le int en focntion des coordonnées
     if(blockType == CLOUDS_PAIR || blockType == SKY_PAIR) return 0;
     else if(blockType == POWER_BOX_PAIR) return 2;
+    else if(blockType == MOB_PAIR) return 3;
     else return 1;
 }
 //endregion CALCULATE MOVEMENTS
