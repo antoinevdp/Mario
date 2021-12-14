@@ -32,7 +32,7 @@
 #define MAPLISTSIZE 10659
 
 void drawAction(int pair, char ch);
-void asciiToIntAction(int n);
+void asciiToIntAction(int listIndex, int n);
 int getIntMapList();
 void printIntMapList();
 int fromCoordToElementInMapList(int y, int x);

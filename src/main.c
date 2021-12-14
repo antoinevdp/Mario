@@ -22,7 +22,7 @@ int player_y = SPAWN_POINT_Y;
 int player_life = 1;
 int next_pos_x = 0;
 int next_pos_y = 0;
-int animationFPS = 50;
+int animationFPS = 60;
 
 int power_y = 0;
 int power_x = 0;
@@ -32,7 +32,7 @@ int nextTypeBlockDown;
 int nextTypeBlockForward;
 int nextTypeBlockBackward;
 
-int previousInputList[1];
+char previousInputList[1];
 
 time_t mytime_start;
 char * time_str_start;
@@ -53,58 +53,42 @@ int main ( int argc, char **argv) {
     Setup(); //Start ncurses
     getmaxyx(stdscr, screen_height, screen_width); //recupere la taille du terminal
     // si en plein ecran
-    if (!(screen_height<49 || screen_width<209)){
+    if (!(screen_height<SCREEN_HEIGHT || screen_width<SCREEN_WIDTH)){
         // Tant que l'entrée clavier n'est pas 'q'
         startPlayerColor();
 
-        while ((input = GetKey()) != 'q'){
+        while ((input = getch()) != 'x'){
+            resetCharacterDisplay();
             //play
             getNextTypeBlockUpAndDown();
-            //region gravité
-            gravity();
-            //endregion gravité
 
-            //region INPUT SWITCHER
-            switch (input) {
-                case KEY_DOWN:
-                    printf("down");
-                    break;
-                case KEY_LEFT:
-                    previousInputList[0] = input;
-                    mytime_start = time(NULL);
-                    movePlayer(-1);
-                    //movePlayer(nextTypeBlockBackward, nextTypeBlockBackwardHead, -1);
-                    break;
-                case KEY_RIGHT:
-                    previousInputList[0] = input;
-                    mytime_start = time(NULL);
-                    movePlayer(1);
-                    //movePlayer(nextTypeBlockForward, nextTypeBlockForwardHead, 1);
-                    break;
-                default:
-                    // Si touche espace appuyé
-                    if (input == ' ')
-                    {
-                        mytime_end = time(NULL);
-                        double time_diff = difftime(mytime_end, mytime_start);
-                        if (time_diff >= 0.5) previousInputList[0] = input;
-                        if (canJump()){
-                            jump(previousInputList[0]); // Sinon, on saute en ligne droite
-                        }
+            powerBoxMovements();
 
-                        break;
-                    }
-                    else break;
+            if(input == 'd'){
+                previousInputList[0] = input;
+                mytime_start = time(NULL);
+                movePlayer(1);
+            }else if(input == 'q'){
+                previousInputList[0] = input;
+                mytime_start = time(NULL);
+                movePlayer(-1);
+            } else if(input == ' '){
+                mytime_end = time(NULL);
+                double time_diff = difftime(mytime_end, mytime_start);
+                if (time_diff >= 0.5) previousInputList[0] = input;
+                if (canJump(player_y, player_x, CHAR_DIMENSION)){
+                    jump(previousInputList[0]); // Sinon, on saute en ligne droite
+                }
+            } else{
+                gravity();
             }
-            //endregion INPUT SWITCHER
-            gravity();
-            //Apres avoir effectué les calculs, on bouge le joueur
+            resetCharacterDisplay();
             displayCharacter();
             // On actualise l'écran
             UpdateScreen();
         }
-        //Si la touche 'q' est appuyé, on ferme
         Shutdown();
+        exit(1);
 
     }else{ //si l'écran n'est pas en plein écran
         Shutdown(); //on ferme
@@ -120,12 +104,11 @@ int main ( int argc, char **argv) {
 //region CHARACTER MOVEMENT
 void movePlayer(int m_direction){
     resetCharacterDisplay();
-    if(m_direction == 1 && canGoRight() == 1){
+    if(m_direction == 1 && canGoRight(player_y, player_x, CHAR_DIMENSION) == 1){
         player_x++;
-    }else if(m_direction == -1 && canGoLeft() == 1){
+    }else if(m_direction == -1 && canGoLeft(player_y, player_x, CHAR_DIMENSION) == 1){
         player_x--;
     }
-    else return;
 }
 
 // Fonction pour faire sauter le personnage en ligne droite
@@ -134,11 +117,11 @@ void jump(int previousInput){
     for (int i = 1; i <= JUMP_STRENGHT; ++i) {
         getNextTypeBlockUpAndDown();
         resetCharacterDisplay();
-        if (canJump() == 1){// Si le bloc est un bloc vide, on monte
+        if (canJump(player_y, player_x, CHAR_DIMENSION) == 1){// Si le bloc est un bloc vide, on monte
             player_y-=0.01*i;
-            if(previousInput == KEY_RIGHT && canJump() == 1 && canGoRight()){
+            if(previousInput == 'd' && canJump(player_y, player_x, CHAR_DIMENSION) == 1 && canGoRight(player_y, player_x, CHAR_DIMENSION)){
                 player_x++;
-            } else if(previousInput == KEY_LEFT && canJump() == 1 && canGoLeft()){
+            } else if(previousInput == 'q' && canJump(player_y, player_x, CHAR_DIMENSION) == 1 && canGoLeft(player_y, player_x, CHAR_DIMENSION)){
                 player_x--;
             }
         }
@@ -153,15 +136,15 @@ void jump(int previousInput){
     //Tant que le bloc en dessous est un bloc vide
     int hasTouched = 0;
     int counter = 0;
-    while (canDrop() == 1){
+    while (canDrop(player_y, player_x, CHAR_DIMENSION) == 1){
         counter += 1;
         resetCharacterDisplay();
         player_y++;
         if (counter >= 5) hasTouched == 1;
 
-        if (canGoRight() != 1 || canGoLeft() != 1) hasTouched = 1;
-        if (previousInput == KEY_RIGHT && canDrop() == canGoRight() == 1 && hasTouched == 0)  player_x++;
-        else if (previousInput == KEY_LEFT && canDrop() == canGoLeft() == 1 && hasTouched == 0) player_x--;
+        if (canGoRight(player_y, player_x, CHAR_DIMENSION) != 1 || canGoLeft(player_y, player_x, CHAR_DIMENSION) != 1) hasTouched = 1;
+        if (previousInput == 'd' && canDrop(player_y, player_x, CHAR_DIMENSION) == canGoRight(player_y, player_x, CHAR_DIMENSION) == 1 && hasTouched == 0)  player_x++;
+        else if (previousInput == 'q' && canDrop(player_y, player_x, CHAR_DIMENSION) == canGoLeft(player_y, player_x, CHAR_DIMENSION) == 1 && hasTouched == 0) player_x--;
 
         displayCharacter();
         napms(animationFPS);
@@ -169,15 +152,23 @@ void jump(int previousInput){
     }
     getNextTypeBlockUpAndDown();
     flushinp();
-    return;
+}
+
+void powerBoxMovements(){
+    if((power_x != 0) && ((canGoRight(power_y, power_x, 1) == 1) || (canDrop(power_y, power_x, 1) == 1))){
+        mvprintw(power_y, power_x, " ");
+        if(canGoRight(power_y, power_x, 1) == 1) power_x++;
+        if(canDrop(power_y, power_x, 1) == 1) power_y++;
+        mvprintw(power_y, power_x, "o");
+        napms(animationFPS);
+    }
 }
 
 void gravity(){
-    while (canDrop() == 1){
+    if (canDrop(player_y, player_x, CHAR_DIMENSION) == 1){
         resetCharacterDisplay();
         player_y++;
         displayCharacter();
-        napms(animationFPS);
         UpdateScreen();
     }
     flushinp();
@@ -224,27 +215,27 @@ void resetCharacterDisplay(){
 //endregion CHARACTER DISPLAY
 
 //region CAN
-int canGoRight(){
+int canGoRight(int y, int x, int dimension){
     int somme = 0;
-    for (int i = 0; i < CHAR_DIMENSION; ++i) somme += checkPossibleMove(player_y - i, player_x+1);
+    for (int i = 0; i < dimension; ++i) somme += checkPossibleMove(y - i, x + 1);
     if(somme != 0) return 0;
     else return 1;
 }
-int canGoLeft(){
+int canGoLeft(int y, int x, int dimension){
     int somme = 0;
-    for (int i = 0; i < CHAR_DIMENSION; ++i)  somme += checkPossibleMove(player_y - i, player_x-3);
+    for (int i = 0; i < dimension; ++i)  somme += checkPossibleMove(y - i, x - 3);
     if(somme != 0) return 0;
     else return 1;
 }
-int canJump(){
+int canJump(int y, int x, int dimension){
     int somme = 0;
-    for (int i = 0; i < CHAR_DIMENSION; ++i) somme += checkPossibleMove(player_y - 3, player_x - i);
+    for (int i = 0; i < dimension; ++i) somme += checkPossibleMove(y - 3, x - i);
     if(somme != 0) return 0;
     else return 1;
 }
-int canDrop(){
+int canDrop(int y, int x, int dimension){
     int somme = 0;
-    for (int i = 0; i < CHAR_DIMENSION; ++i) somme += checkPossibleMove(player_y + 1, player_x - i);
+    for (int i = 0; i < dimension; ++i) somme += checkPossibleMove(y + 1, x - i);
     if(somme != 0) return 0;
     else return 1;
 }
@@ -270,7 +261,6 @@ void spawnPower(){
     power_y = player_y+Y_OFFSET_HEAD-3;
     power_x = player_x+X_OFFSET_HEAD;
     mvprintw(power_y, power_x, "o");
-    startPlayerColor();
 }
 
 // Fonction pour changer la couleur du bloc mystere
@@ -279,6 +269,7 @@ void blockMystereDisplay(){
     //initialisation des couleurs
     init_pair(10, COLOR_YELLOW, COLOR_BLACK);
     attron(COLOR_PAIR(10));
+    //déplace à la position où le joueur tape + power box
     if(checkPossibleMove(player_y+Y_OFFSET_HEAD-1, player_x+X_OFFSET_HEAD-1) == POWER_BOX_VALUE) mvprintw(player_y+Y_OFFSET_HEAD-1, player_x+X_OFFSET_HEAD-1, ch_t);
     if(checkPossibleMove(player_y+Y_OFFSET_HEAD-1, player_x+X_OFFSET_HEAD-2) == POWER_BOX_VALUE) mvprintw(player_y+Y_OFFSET_HEAD-1, player_x+X_OFFSET_HEAD-2, ch_t);
     if(checkPossibleMove(player_y+Y_OFFSET_HEAD-1, player_x+X_OFFSET_HEAD+1) == POWER_BOX_VALUE) mvprintw(player_y+Y_OFFSET_HEAD-1, player_x+X_OFFSET_HEAD+1, ch_t);
@@ -292,6 +283,7 @@ void blockMystereDisplay(){
     attroff(COLOR_PAIR(10));
     init_pair(20, COLOR_CYAN, COLOR_BLUE);
     attron(COLOR_PAIR(20));
+    startPlayerColor();
     spawnPower();
 }
 //endregion DIVERS

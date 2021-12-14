@@ -9,6 +9,8 @@
 
 #ifndef INNOVATION_MAIN_H
 #define INNOVATION_MAIN_H
+#define SCREEN_WIDTH 209
+#define SCREEN_HEIGHT 49
 
 //region prototypes
 //void drawMap(char *filename);
@@ -18,24 +20,26 @@ void displayCharacter();
 void resetCharacterDisplay();
 int checkPossibleMove(int y, int x);
 void getNextTypeBlockUpAndDown();
-int canGoRight();
-int canGoLeft();
-int canJump();
-int canDrop();
+int canGoRight(int y, int x, int dimension);
+int canGoLeft(int y, int x, int dimension);
+int canJump(int y, int x, int dimension);
+int canDrop(int y, int x, int dimension);
 void movePlayer(int m_direction);
+void powerBoxMovements();
 void jump();
 void blockMystereDisplay();
 void gravity();
+void powerGravity();
 void spawnPower();
 //endregion prototypes
 
 
 void Setup(){
     initscr(); //initialisation de la fenetre ncurses
-    raw();
     curs_set(0); //on enleve le curseur
-    keypad(stdscr, TRUE); //initialisation de la recuperation des inputs
     noecho();
+    keypad(stdscr, TRUE); //initialisation de la recuperation des inputs
+    timeout(50);
     drawMap("../bin/ascii-art.txt"); //On dessine la map sur l'écran
 }
 
@@ -44,7 +48,7 @@ void Shutdown(){
 }
 
 int GetKey(){
-    return getch(); //recupere une entree clavier
+    return getchar(); //recupere une entree clavier
 }
 
 void UpdateScreen(){

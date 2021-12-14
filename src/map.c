@@ -5,7 +5,7 @@
 #include "map.h"
 
 int intMapList[MAPLISTSIZE]; // liste contenant les entiers correspondant a la map ascii
-int currentListIndex; // index actuel de la liste
+int listIndex; // index actuel de la liste
 //endregion MAP PROPERTIES
 
 //region Functions
@@ -14,8 +14,8 @@ void drawAction(int pair, char ch){
     attron(COLOR_PAIR(pair));
     printw("%c", ch);
 }
-void asciiToIntAction(int n){
-    intMapList[currentListIndex] = n; //on change l'element de la liste avec un entier
+void asciiToIntAction(int listIndex, int n){
+    intMapList[listIndex] = n; //on change l'element de la liste avec un entier
 }
 //endregion Action Functions
 
@@ -66,37 +66,37 @@ void drawMap(char *filename){
     // caractere par caractere
     while ((ch = fgetc(src)) != EOF)
     {
-        currentListIndex++; // on incremente index
+        listIndex++; // on incremente index
         //switcher
 
         //region SWITCHER
         switch (ch) {
             case GRASS:
                 drawAction(GRASS_PAIR, ch); // On dessine sur la map
-                asciiToIntAction(GRASS_PAIR); // On ajoute le nombre correspondant au caractère dans la liste
+                asciiToIntAction(listIndex, GRASS_PAIR); // On ajoute le nombre correspondant au caractère dans la liste
                 break;
             case DIRT:
                 drawAction(DIRT_PAIR, ch);
-                asciiToIntAction(DIRT_PAIR);
+                asciiToIntAction(listIndex, DIRT_PAIR);
                 break;
             case CLOUDS:
                 drawAction(CLOUDS_PAIR, *" "); // On ne veut pas dessiner le caractere sur la map
-                asciiToIntAction(CLOUDS_PAIR);
+                asciiToIntAction(listIndex, CLOUDS_PAIR);
                 break;
             case SKY:
                 drawAction(SKY_PAIR, *" ");
-                asciiToIntAction(SKY_PAIR);
+                asciiToIntAction(listIndex, SKY_PAIR);
                 break;
             case BLOCKS:
                 drawAction(BLOCKS_PAIR, ch);
-                asciiToIntAction(BLOCKS_PAIR);
+                asciiToIntAction(listIndex, BLOCKS_PAIR);
                 break;
             case POWER_BOX:
                 drawAction(POWER_BOX_PAIR, ch);
-                asciiToIntAction(POWER_BOX_PAIR);
+                asciiToIntAction(listIndex, POWER_BOX_PAIR);
                 break;
             case BORDER:
-                asciiToIntAction(BORDER_PAIR);
+                asciiToIntAction(listIndex, BORDER_PAIR);
                 drawAction(BORDER_PAIR, ch);
                 break;
             default:
