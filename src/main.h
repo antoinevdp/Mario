@@ -11,6 +11,7 @@
 #define INNOVATION_MAIN_H
 #define SCREEN_WIDTH 209
 #define SCREEN_HEIGHT 49
+#define FPS 40
 
 #define new_max(x,y) (((x) >= (y)) ? (x) : (y))
 
@@ -22,6 +23,7 @@ void displayCharacter();
 void resetCharacterDisplay();
 int checkPossibleMove(int y, int x);
 void getNextTypeBlocks();
+void checkMobCollsion();
 int canGoRight(int y, int x, int dimension);
 int canGoLeft(int y, int x, int dimension);
 int canJump(int y, int x, int dimension);
