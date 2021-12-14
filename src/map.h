@@ -34,6 +34,7 @@
 void drawAction(int pair, char ch);
 void asciiToIntAction(int listIndex, int n);
 int getIntMapList();
+int fromCoordToIndexInMapList(int y, int x);
 void printIntMapList();
 int fromCoordToElementInMapList(int y, int x);
 void drawMap(char *filename);

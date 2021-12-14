@@ -22,10 +22,18 @@ int player_y = SPAWN_POINT_Y;
 int player_life = 1;
 int next_pos_x = 0;
 int next_pos_y = 0;
-int animationFPS = 60;
+int animationFPS = 40;
+
+int mapListInt[MAPLISTSIZE];
 
 int power_y = 0;
 int power_x = 0;
+
+int direction = 1;
+
+int rightWall = 0;
+int leftWall = 0;
+
 
 int nextTypeBlockUp;
 int nextTypeBlockDown;
@@ -48,6 +56,7 @@ int main ( int argc, char **argv) {
     WINDOW *win;
     int input; // entree clavier
     int screen_width, screen_height; //taille de l'écran
+    memcpy(intMapList, mapListInt, MAPLISTSIZE);
     //endregion variables
 
     Setup(); //Start ncurses
@@ -58,11 +67,10 @@ int main ( int argc, char **argv) {
         startPlayerColor();
 
         while ((input = getch()) != 'x'){
+            if(player_y >= SCREEN_HEIGHT) { Shutdown(); exit(1); }
             resetCharacterDisplay();
             //play
             getNextTypeBlockUpAndDown();
-
-            powerBoxMovements();
 
             if(input == 'd'){
                 previousInputList[0] = input;
@@ -81,11 +89,13 @@ int main ( int argc, char **argv) {
                 }
             } else{
                 gravity();
+                powerBoxMovements();
             }
             resetCharacterDisplay();
             displayCharacter();
             // On actualise l'écran
             UpdateScreen();
+            flushinp();
         }
         Shutdown();
         exit(1);
@@ -125,7 +135,10 @@ void jump(int previousInput){
                 player_x--;
             }
         }
-        if(nextTypeBlockUp == POWER_BOX_VALUE) blockMystereDisplay(); // Si c'est un bloc mystere, on display et on arrête de monter
+        if(nextTypeBlockUp == POWER_BOX_VALUE){
+            blockMystereDisplay(); // Si c'est un bloc mystere, on display et on arrête de monter
+            break;
+        }
 
         displayCharacter();
         napms(animationFPS); // on laisse un delai pour l'animation
@@ -136,7 +149,7 @@ void jump(int previousInput){
     //Tant que le bloc en dessous est un bloc vide
     int hasTouched = 0;
     int counter = 0;
-    while (canDrop(player_y, player_x, CHAR_DIMENSION) == 1){
+    if (canDrop(player_y, player_x, CHAR_DIMENSION) == 1){
         counter += 1;
         resetCharacterDisplay();
         player_y++;
@@ -155,13 +168,25 @@ void jump(int previousInput){
 }
 
 void powerBoxMovements(){
-    if((power_x != 0) && ((canGoRight(power_y, power_x, 1) == 1) || (canDrop(power_y, power_x, 1) == 1))){
+    if(power_x != 0 && (canDrop(power_y, power_x, 1) == 1 || (canGoRight(power_y, power_x, 1) == 1) || (canGoLeft(power_y, power_x, 1) == 1))){
         mvprintw(power_y, power_x, " ");
-        if(canGoRight(power_y, power_x, 1) == 1) power_x++;
         if(canDrop(power_y, power_x, 1) == 1) power_y++;
+
+        if((canGoRight(power_y, power_x, 1) == 1) && (direction == 1)) direction=1;
+        else{
+            rightWall = power_x+1;
+            direction = -1;
+        }
+        if((canGoLeft(power_y, power_x, 1) == 1) && (direction == -1)) direction=-1;
+        else{
+            leftWall = power_x-1;
+            direction = 1;
+        }
+        power_x += direction;
         mvprintw(power_y, power_x, "o");
         napms(animationFPS);
     }
+
 }
 
 void gravity(){
@@ -197,6 +222,8 @@ void startPlayerColor(){
     attron(COLOR_PAIR(50));
 }
 void startPlayerStarColor(){
+    power_x = 0;
+    power_y = 0;
     start_color();
     //initialisation des couleurs pour chaque objet
     init_pair(60, COLOR_YELLOW, COLOR_BLUE);
@@ -280,11 +307,17 @@ void blockMystereDisplay(){
     if(checkPossibleMove(player_y+Y_OFFSET_HEAD-2, player_x+X_OFFSET_HEAD+2) == POWER_BOX_VALUE) mvprintw(player_y+Y_OFFSET_HEAD-2, player_x+X_OFFSET_HEAD+2, ch_t);
     mvprintw(player_y+Y_OFFSET_HEAD-1, player_x+X_OFFSET_HEAD, ch_t);
     mvprintw(player_y+Y_OFFSET_HEAD-2, player_x+X_OFFSET_HEAD, ch_t);
+    int index = fromCoordToIndexInMapList(player_y+Y_OFFSET_HEAD-1, player_x+X_OFFSET_HEAD);
     attroff(COLOR_PAIR(10));
     init_pair(20, COLOR_CYAN, COLOR_BLUE);
     attron(COLOR_PAIR(20));
     startPlayerColor();
-    spawnPower();
+    if(mapListInt[index] == 0) spawnPower();
+    mapListInt[index] = 1;
+    mapListInt[index-1] = 1;
+    mapListInt[index+1] = 1;
+    mapListInt[index-2] = 1;
+    mapListInt[index+2] = 1;
 }
 //endregion DIVERS
 //endregion Functions

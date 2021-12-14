@@ -35,6 +35,11 @@ int fromCoordToElementInMapList(int y, int x){
     //Donc position x=0 et y=1 -> elmt 210
     return intMapList[(y*209) + x+1];
 }
+int fromCoordToIndexInMapList(int y, int x){
+    //Tous les 209 elmts, y++
+    //Donc position x=0 et y=1 -> elmt 210
+    return ((y*209) + x+1);
+}
 
 //region MAP
 void drawMap(char *filename){

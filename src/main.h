@@ -39,7 +39,7 @@ void Setup(){
     curs_set(0); //on enleve le curseur
     noecho();
     keypad(stdscr, TRUE); //initialisation de la recuperation des inputs
-    timeout(50);
+    timeout(65);
     drawMap("../bin/ascii-art.txt"); //On dessine la map sur l'écran
 }
 
