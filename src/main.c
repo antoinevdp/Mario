@@ -222,10 +222,9 @@ int game (char *filename) {
                 if (canJump(player_y, player_x, CHAR_DIMENSION)){ // Si le joueur peut sauter
                     jump(previousInputList[0]); // On fait sauter le joueur en passant en parametre le dernier input pour connaitre la direction du saut
                 }
-            } else{ // Sinon
-                gravity(); // on applique la gravite (dans le else pour permettre un double dash)
-                powerBoxMovements(); // on applique les movements du champignonss
             }
+            gravity(); // on applique la gravite (dans le else pour permettre un double dash)
+            powerBoxMovements(); // on applique les movements du champignonss
             displayCharacter(); // on affiche le caractère aux nouvelles positions
             UpdateScreen();// On actualise l'écran
         }
