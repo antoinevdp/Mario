@@ -8,6 +8,13 @@ Pour lancer notre projet:
 -Executer: gcc main.c -o output -lncurses
 puis: ./output
 
+Commandes:
+'q' pour aller à gauche
+'d' pour aller à droite
+'x' pour quitter
+
+Lorsque le joueur attrappe le champignon, il a une vie supplémentaire.
+
 Si au lancement d'une map, le terminale affiche le personnage mais sans fond, décor,
 il y a un problème de type de end line des fichiers .txt
 
