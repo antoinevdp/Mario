@@ -4,30 +4,30 @@ Game developped by two ESME students for a school project.
 
 ! WARNING !
 
-Pour lancer notre projet:
--Executer: gcc main.c -o output -lncurses
-puis: ./output
+Pour lancer notre projet :
+- Aller dans le dossier src du projet.
+- Executer: gcc main.c -o output -lncurses
+- Executer: ./output
 
-Commandes:
-'q' pour aller à gauche
-'d' pour aller à droite
-'x' pour quitter
+Commandes :
+- 'q' pour aller à gauche.
+- 'd' pour aller à droite.
+- 'x' pour quitter.
 
-Lorsque le joueur attrappe le champignon, il a une vie supplémentaire.
+Lorsque le joueur attrape le champignon, il a une vie supplémentaire.
 
 Si au lancement d'une map, le terminale affiche le personnage mais sans fond, décor,
 il y a un problème de type de end line des fichiers .txt
 
-Exemple:
-- En executant dans un terminale:
+Exemple :
+- En exécutant dans un terminale:
 - file <nom_du_fichier>.txt
 - On obtient : out.txt: ASCII text, with CRLF line terminators
-Nous devons avoir : map.txt: ASCII text
+- Nous devons avoir : map.txt: ASCII text
 
-Solutions:
-
-- Ouvrir un terminale
-- Se rendre dans le dossier bin du projet
+Solutions :
+- Ouvrir un terminal.
+- Se rendre dans le dossier bin du projet.
 - Executer: sudo apt-get install dos2unix
 - Executer: dos2unix <nom_du_fichier>.txt
 
