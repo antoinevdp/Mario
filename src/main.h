@@ -16,6 +16,7 @@
 #define new_max(x,y) (((x) >= (y)) ? (x) : (y))
 
 //region prototypes
+int game(char *filename);
 void startPlayerColor();
 void startPlayerStarColor();
 void displayCharacter();
@@ -23,6 +24,7 @@ void resetCharacterDisplay();
 int checkPossibleMove(int y, int x);
 void getNextTypeBlocks();
 void checkMobCollsion();
+void checkFlagCollision();
 int canGoRight(int y, int x, int dimension);
 int canGoLeft(int y, int x, int dimension);
 int canJump(int y, int x, int dimension);
