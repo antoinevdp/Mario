@@ -21,6 +21,7 @@
 
 #define POWER_BOX_VALUE 2
 #define AIR_BLOCK_VALUE 0
+#define BLOCK_VALUE 4
 #define MOB_VALUE 3
 
 #define GRASS_PAIR     1

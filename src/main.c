@@ -15,7 +15,10 @@
 
 //endregion INCLUDE
 
-int game(char *filename);
+//region define
+#define ENTER 10
+#define ESCAPE 27
+//endregion define
 
 //region VARIABLES
 //region player var
@@ -50,9 +53,9 @@ char * time_str_end;// variable char correspondant a la variable de temps end
 
 //endregion VARIABLES
 
-
-#define ENTER 10
-#define ESCAPE 27
+//region MENU
+//Nous nous sommes inspiré d'un menu trouvé sur internet
+// Initialisation ncurses
 void init_curses()
 {
     initscr();
@@ -177,9 +180,9 @@ int main()
     }
 
 }
+//endregion MENU
 
-
-//region main
+//region game
 int game (char *filename) {
     setlocale(LC_ALL, ""); // Permet d'afficher des caractères spéciaux dans le terminale
     //region variables
@@ -199,6 +202,7 @@ int game (char *filename) {
             resetCharacterDisplay(); // on efface les caractères aux positions precedentes
             getNextTypeBlocks(); // on recupere les next blocks types du joueur
             checkMobCollsion(); // on check si on touche un block ennemi
+            checkFlagCollision(); // on check si on touche un block ennemi
 
             if(player_y >= SCREEN_HEIGHT) { Shutdown(); exit(1); } // Si le joueur tombe dans le vide
             if(player_life <= 0) { Shutdown(); exit(1); } // Si le joueur n'a plus de vie
@@ -236,7 +240,7 @@ int game (char *filename) {
     }
 
 }
-//endregion main
+//endregion game
 
 //region Functions
 
@@ -416,6 +420,7 @@ int checkPossibleMove(int y, int x){
     if(blockType == CLOUDS_PAIR || blockType == SKY_PAIR) return 0; // Si c'est un bloc traversable
     else if(blockType == POWER_BOX_PAIR) return 2; // Si c'est un bloc pouvoir
     else if(blockType == MOB_PAIR) return 3; // Si c'est un bloc ennemi
+    else if(blockType == BLOCKS_PAIR) return 4; // Si c'est un bloc ennemi
     else return 1; // Sinon c'est un bloc non traversable
 }
 
@@ -423,6 +428,14 @@ int checkPossibleMove(int y, int x){
 void checkMobCollsion(){
     // Si les blocs suivants sont des bloc ennemi
     if(nextTypeBlockUp == MOB_VALUE || nextTypeBlockDown == MOB_VALUE || nextTypeBlockRight == MOB_VALUE || nextTypeBlockLeft == MOB_VALUE){
+        Shutdown();
+        exit(1);
+    }
+}
+
+void checkFlagCollision(){
+    // Si les blocs suivants sont des bloc ennemi
+    if(nextTypeBlockUp == BLOCK_VALUE || nextTypeBlockDown == BLOCK_VALUE || nextTypeBlockRight == BLOCK_VALUE || nextTypeBlockLeft == BLOCK_VALUE){
         player_life--; // le personnage perd une vie
         if(previousInputList[0] == 'q') player_x+=4; // Si on était en train de reculer, on se fait ejecter dans la direction inverse
         if(previousInputList[0] == 'd') player_x-=4;// Si on était en train de'avancer, on se fait ejecter dans la direction inverse
