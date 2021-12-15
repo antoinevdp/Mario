@@ -151,8 +151,10 @@ int main()
                 clear();
                 game("../bin/map.txt");
             }
-            else if(selected_item==1)
-                wprintw(messagebar,"Let's play lvl 2",2);
+            else if(selected_item==1){
+                clear();
+                game("../bin/map2.txt");
+            }
             else if(selected_item==2)
                 wprintw(messagebar,"Mario game created by Lucas Mouquet and Antoine Vandeplanque",3);
 
