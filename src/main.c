@@ -426,20 +426,19 @@ int checkPossibleMove(int y, int x){
 
 // Fonction pour vérifier que le joueur touche ou non un bloc ennemi et effectué l'action
 void checkMobCollsion(){
-    // Si les blocs suivants sont des bloc ennemi
     if(nextTypeBlockUp == MOB_VALUE || nextTypeBlockDown == MOB_VALUE || nextTypeBlockRight == MOB_VALUE || nextTypeBlockLeft == MOB_VALUE){
-        Shutdown();
-        exit(1);
+        player_life--; // le personnage perd une vie
+        if(previousInputList[0] == 'q') player_x+=4; // Si on était en train de reculer, on se fait ejecter dans la direction inverse
+        if(previousInputList[0] == 'd') player_x-=4;// Si on était en train de'avancer, on se fait ejecter dans la direction inverse
+        startPlayerColor(); // On a perdu notre pouvoir, donc on redevient en couleur classique
     }
 }
 
 void checkFlagCollision(){
     // Si les blocs suivants sont des bloc ennemi
     if(nextTypeBlockUp == BLOCK_VALUE || nextTypeBlockDown == BLOCK_VALUE || nextTypeBlockRight == BLOCK_VALUE || nextTypeBlockLeft == BLOCK_VALUE){
-        player_life--; // le personnage perd une vie
-        if(previousInputList[0] == 'q') player_x+=4; // Si on était en train de reculer, on se fait ejecter dans la direction inverse
-        if(previousInputList[0] == 'd') player_x-=4;// Si on était en train de'avancer, on se fait ejecter dans la direction inverse
-        startPlayerColor(); // On a perdu notre pouvoir, donc on redevient en couleur classique
+        Shutdown();
+        exit(1);
     }
 }
 //endregion CALCULATE MOVEMENTS
