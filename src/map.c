@@ -10,31 +10,34 @@ int listIndex; // index actuel de la liste
 
 //region Functions
 //region Action Functions
+// Fonction qui permet de mettre les couleurs à l'ecran et les caractères
 void drawAction(int pair, char ch){
     attron(COLOR_PAIR(pair)); // On active la couleur pour la pair
     printw("%c", ch); // Affichage du caractère
 }
+// Fonction qui permet de mettre dans une liste les entiers correspondants a chaque ascii
 void asciiToIntAction(int listIndex, int n){
     intMapList[listIndex] = n; //on change l'element de la liste avec un entier
 }
 //endregion Action Functions
-
+// Return la liste
 int getIntMapList(){
     return *intMapList; //retourne la liste map des entiers
 }
-
+// Fonction pour afficher chaque element de la liste d'entiers
 void printIntMapList(){
     for(int i=0; i<MAPLISTSIZE; i++){
         printf("%d", intMapList[i]);
     }
 }
 
-//fonction pour recuperer l'element correspondant aux coordonnées
+//fonction pour recuperer l'element à l'indice correspondant aux coordonnées
 int fromCoordToElementInMapList(int y, int x){
     //Tous les 209 elmts, y++
     //Donc position x=0 et y=1 -> elmt 210
     return intMapList[(y*209) + x+1];
 }
+// Fonction pour récupérer l'indice de l'élément correspondant aux coordonnées
 int fromCoordToIndexInMapList(int y, int x){
     //Tous les 209 elmts, y++
     //Donc position x=0 et y=1 -> elmt 210
@@ -42,10 +45,11 @@ int fromCoordToIndexInMapList(int y, int x){
 }
 
 //region MAP
+// Fonction qui associe à chaque caractère une couleur et un texte pour le dessiner
 void drawMap(char *filename){
     //Ouverture du fichier
-    FILE *src;
-    src = fopen (filename, "r");
+    FILE *src; // Variable FILE pour notre fichier.txt
+    src = fopen (filename, "r"); // On ouvre le fichier en mode lecture
     if(src == NULL){ // on verifie que le fichier existe
         perror("Ouverture fail");
         exit(1);
@@ -58,7 +62,7 @@ void drawMap(char *filename){
     }
     //start color
     start_color();
-    //initialisation des couleurs pour chaque objet
+    //initialisation des pairs de couleurs pour chaque objet ascii
     init_pair(GRASS_PAIR, COLOR_YELLOW, COLOR_GREEN);
     init_pair(DIRT_PAIR, COLOR_BLACK, COLOR_MAGENTA);
     init_pair(CLOUDS_PAIR, COLOR_WHITE, COLOR_WHITE);
@@ -68,12 +72,11 @@ void drawMap(char *filename){
     init_pair(BORDER_PAIR, COLOR_BLACK, COLOR_BLACK);
     init_pair(MOB_PAIR, COLOR_WHITE, COLOR_BLACK);
 
-    char ch; //caractere actuel de la map en ascii
+    char ch; //caractere actuel de notre fichier
     // caractere par caractere
     while ((ch = fgetc(src)) != EOF)
     {
         listIndex++; // on incremente index
-        //switcher
 
         //region SWITCHER
         switch (ch) {
@@ -86,11 +89,11 @@ void drawMap(char *filename){
                 asciiToIntAction(listIndex, DIRT_PAIR);
                 break;
             case CLOUDS:
-                drawAction(CLOUDS_PAIR, *" "); // On ne veut pas dessiner le caractere sur la map
+                drawAction(CLOUDS_PAIR, ' '); // On ne veut pas dessiner le caractere sur la map
                 asciiToIntAction(listIndex, CLOUDS_PAIR);
                 break;
             case SKY:
-                drawAction(SKY_PAIR, *" ");
+                drawAction(SKY_PAIR, ' ');
                 asciiToIntAction(listIndex, SKY_PAIR);
                 break;
             case BLOCKS:
