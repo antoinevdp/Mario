@@ -8,7 +8,7 @@
 #include <ncurses.h>
 
 //region PLAYER PROPERTIES
-#define SPAWN_POINT_X   12
+#define SPAWN_POINT_X   66
 #define SPAWN_POINT_Y   26
 #define JUMP_STRENGHT   5
 #define CHAR_DIMENSION   3
