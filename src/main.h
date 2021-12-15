@@ -37,13 +37,13 @@ void spawnPower();
 //endregion prototypes
 
 // Fonction pour demarrer ncurses
-void Setup(){
+void Setup(char *filename){
     initscr(); //initialisation de la fenetre ncurses
     curs_set(0); //on enleve le curseur
     noecho(); // Evite l'affichage des caracteres a chaque deplacements
     keypad(stdscr, TRUE); //initialisation de la recuperation des inputs
     timeout(65); // Permet d'attendre seulement 65 microsecondes entre chaque inputs, continuera même sans inputts
-    drawMap("../bin/map.txt"); //On dessine la map sur l'écran
+    drawMap(filename); //On dessine la map sur l'écran
 }
 
 void Shutdown(){

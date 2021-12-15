@@ -15,6 +15,8 @@
 
 //endregion INCLUDE
 
+int game(char *filename);
+
 //region VARIABLES
 //region player var
 int player_x = SPAWN_POINT_X;
@@ -49,8 +51,124 @@ char * time_str_end;// variable char correspondant a la variable de temps end
 //endregion VARIABLES
 
 
+#define ENTER 10
+#define ESCAPE 27
+void init_curses()
+{
+    initscr();
+    start_color();
+    init_pair(56,COLOR_WHITE,COLOR_BLACK);
+    init_pair(57,COLOR_BLACK,COLOR_WHITE);
+    curs_set(0);
+    noecho();
+    keypad(stdscr,TRUE);
+}
+
+WINDOW **draw_menu(int start_col)
+{
+
+    WINDOW **items;
+    items=(WINDOW **)malloc(4*sizeof(WINDOW *));
+
+    items[0]=newwin(5,19,1,start_col);
+    wbkgd(items[0],COLOR_PAIR(57));
+    box(items[0],ACS_VLINE,ACS_HLINE);
+    items[1]=subwin(items[0],1,17,2,start_col+1);
+    wprintw(items[1],"LEVEL 1",1);
+    items[2]=subwin(items[0],1,17,3,start_col+1);
+    wprintw(items[2],"LEVEL 2",2);
+    items[3]=subwin(items[0],1,17,4,start_col+1);
+    wprintw(items[3],"INFO",3);
+
+
+
+    wbkgd(items[1],COLOR_PAIR(56));
+    wrefresh(items[0]);
+    return items;
+}
+void delete_menu(WINDOW **items,int count)
+{
+    int i;
+    for (i=0;i<count;i++)
+        delwin(items[i]);
+    free(items);
+}
+int scroll_menu(WINDOW **items,int count,int menu_start_col)
+{
+    int key;
+    int selected=0;
+    while (1) {
+        key=getch();
+        if (key==KEY_DOWN || key==KEY_UP) {
+            wbkgd(items[selected+1],COLOR_PAIR(57));
+            wnoutrefresh(items[selected+1]);
+            if (key==KEY_DOWN) {
+                selected=(selected+1) % count;
+            } else {
+                selected=(selected+count-1) % count;
+            }
+            wbkgd(items[selected+1],COLOR_PAIR(56));
+            wnoutrefresh(items[selected+1]);
+            doupdate();
+        }else if (key==ESCAPE) {
+            return -1;
+        } else if (key==ENTER) {
+            return selected;
+        }
+    }
+}
+int main()
+{
+    int key;
+    WINDOW *messagebar;
+
+    init_curses();
+
+    bkgd(COLOR_PAIR(56));
+    messagebar=subwin(stdscr,1,79,25,100);
+    move(0,0);
+    printw("Press ESC quits.");
+    refresh();
+
+    do {
+        int selected_item;
+        WINDOW **menu_items;
+
+        werase(messagebar);
+        wrefresh(messagebar);
+
+        menu_items=draw_menu(100);
+        selected_item=scroll_menu(menu_items,3,100);
+        delete_menu(menu_items,4);
+        if (selected_item<0)
+            wprintw(messagebar,"You haven't selected any item.");
+        else if(selected_item==0) {
+            //wprintw(messagebar,"Let's play lvl 1",1);
+            clear();
+            game("../bin/map.txt");
+        }
+        else if(selected_item==1)
+            wprintw(messagebar,"Let's play lvl 2",2);
+        else if(selected_item==2)
+            wprintw(messagebar,"Mario game created by Lucas Mouquet and Antoine Vandeplanque",3);
+
+
+
+        touchwin(stdscr);
+        key=getch();
+        refresh();
+
+    }
+    while (key!=ESCAPE);
+
+    delwin(messagebar);
+    endwin();
+    return 0;
+}
+
+
 //region main
-int main ( int argc, char **argv) {
+int game (char *filename) {
     setlocale(LC_ALL, ""); // Permet d'afficher des caractères spéciaux dans le terminale
     //region variables
     WINDOW *win; // notre fenetre du terminale
@@ -59,7 +177,8 @@ int main ( int argc, char **argv) {
     memcpy(intMapList, mapListInt, MAPLISTSIZE); // On copie la liste faite dans le map.c dans la liste déclarée pour la manipuler
     //endregion variables
 
-    Setup(); //On démarre ncurses, le jeu
+    Setup(filename); //On démarre ncurses, le jeu
+    startPlayerColor();
     getmaxyx(stdscr, screen_height, screen_width); //recupere la taille du terminal actuelle
     if (!(screen_height<SCREEN_HEIGHT || screen_width<SCREEN_WIDTH)){ // si en plein ecran
         startPlayerColor(); // on demarre l'affichage des couleurs du joueur

@@ -1,5 +1,8 @@
-#include <curses.h>
+#include <ncurses.h>
 #include <stdlib.h>
+#include "main.c"
+
+
 
 #define ENTER 10
 #define ESCAPE 27
@@ -93,7 +96,8 @@ int main()
         if (selected_item<0)
             wprintw(messagebar,"You haven't selected any item.");
         else if(selected_item==0)
-            wprintw(messagebar,"Let's play lvl 1",1);
+            //wprintw(messagebar,"Let's play lvl 1",1);
+            main();
         else if(selected_item==1)
             wprintw(messagebar,"Let's play lvl 2",2);
         else if(selected_item==2)
