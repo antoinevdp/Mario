@@ -119,51 +119,61 @@ int scroll_menu(WINDOW **items,int count,int menu_start_col)
 }
 int main()
 {
-    int key;
-    WINDOW *messagebar;
-
     init_curses();
-
-    bkgd(COLOR_PAIR(56));
-    messagebar=subwin(stdscr,1,79,25,100);
-    move(0,0);
-    printw("Press ESC quits.");
-    refresh();
-
-    do {
-        int selected_item;
-        WINDOW **menu_items;
-
-        werase(messagebar);
-        wrefresh(messagebar);
-
-        menu_items=draw_menu(100);
-        selected_item=scroll_menu(menu_items,3,100);
-        delete_menu(menu_items,4);
-        if (selected_item<0)
-            wprintw(messagebar,"You haven't selected any item.");
-        else if(selected_item==0) {
-            //wprintw(messagebar,"Let's play lvl 1",1);
-            clear();
-            game("../bin/map.txt");
-        }
-        else if(selected_item==1)
-            wprintw(messagebar,"Let's play lvl 2",2);
-        else if(selected_item==2)
-            wprintw(messagebar,"Mario game created by Lucas Mouquet and Antoine Vandeplanque",3);
+    int screen_width, screen_height;
+    getmaxyx(stdscr, screen_height, screen_width);
+    if (!(screen_height<SCREEN_HEIGHT || screen_width<SCREEN_WIDTH)){
+        int key;
+        WINDOW *messagebar;
 
 
 
-        touchwin(stdscr);
-        key=getch();
+        bkgd(COLOR_PAIR(56));
+        messagebar=subwin(stdscr,1,79,25,100);
+        move(0,0);
+        printw("Press ESC quits.");
         refresh();
 
-    }
-    while (key!=ESCAPE);
+        do {
+            int selected_item;
+            WINDOW **menu_items;
 
-    delwin(messagebar);
-    endwin();
-    return 0;
+            werase(messagebar);
+            wrefresh(messagebar);
+
+            menu_items=draw_menu(100);
+            selected_item=scroll_menu(menu_items,3,100);
+            delete_menu(menu_items,4);
+            if (selected_item<0)
+                wprintw(messagebar,"You haven't selected any item.");
+            else if(selected_item==0) {
+                //wprintw(messagebar,"Let's play lvl 1",1);
+                clear();
+                game("../bin/map.txt");
+            }
+            else if(selected_item==1)
+                wprintw(messagebar,"Let's play lvl 2",2);
+            else if(selected_item==2)
+                wprintw(messagebar,"Mario game created by Lucas Mouquet and Antoine Vandeplanque",3);
+
+
+
+            touchwin(stdscr);
+            key=getch();
+            refresh();
+
+        }
+        while (key!=ESCAPE);
+
+        delwin(messagebar);
+        endwin();
+        return 0;
+    } else{
+        Shutdown(); // On arrete ncurses
+        printf("Mettre la fenetre en plein ecran svp !\n");
+        return 0; // on stoppe le programme
+    }
+
 }
 
 
