@@ -11,8 +11,8 @@ int listIndex; // index actuel de la liste
 //region Functions
 //region Action Functions
 void drawAction(int pair, char ch){
-    attron(COLOR_PAIR(pair));
-    printw("%c", ch);
+    attron(COLOR_PAIR(pair)); // On active la couleur pour la pair
+    printw("%c", ch); // Affichage du caractère
 }
 void asciiToIntAction(int listIndex, int n){
     intMapList[listIndex] = n; //on change l'element de la liste avec un entier

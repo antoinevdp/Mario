@@ -16,7 +16,6 @@
 #define new_max(x,y) (((x) >= (y)) ? (x) : (y))
 
 //region prototypes
-//void drawMap(char *filename);
 void startPlayerColor();
 void startPlayerStarColor();
 void displayCharacter();
@@ -37,22 +36,18 @@ void powerGravity();
 void spawnPower();
 //endregion prototypes
 
-
+// Fonction pour demarrer ncurses
 void Setup(){
     initscr(); //initialisation de la fenetre ncurses
     curs_set(0); //on enleve le curseur
-    noecho();
+    noecho(); // Evite l'affichage des caracteres a chaque deplacements
     keypad(stdscr, TRUE); //initialisation de la recuperation des inputs
-    timeout(65);
+    timeout(65); // Permet d'attendre seulement 65 microsecondes entre chaque inputs, continuera même sans inputts
     drawMap("../bin/ascii-art.txt"); //On dessine la map sur l'écran
 }
 
 void Shutdown(){
-    endwin();			/* Stop */
-}
-
-int GetKey(){
-    return getchar(); //recupere une entree clavier
+    endwin();//Stop
 }
 
 void UpdateScreen(){
